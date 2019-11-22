@@ -7,7 +7,7 @@ SIZE=${1:-20}
 sudo apt install -y jq
 
 # Get the ID of the envrionment host Amazon EC2 instance.
-INSTANCEID=$(curl -s http://169.254.169.254/latest/meta-data//instance-id)
+INSTANCEID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
 
 # Get the ID of the Amazon EBS volume associated with the instance.
 VOLUMEID=$(aws ec2 describe-instances --instance-id $INSTANCEID | jq -r .Reservations[0].Instances[0].BlockDeviceMappings[0].Ebs.VolumeId)
@@ -20,8 +20,11 @@ while [ "$(aws ec2 describe-volumes-modifications --volume-id $VOLUMEID --filter
   sleep 1
 done
 
+PART=$(blkid | grep rootfs | awk '{print $1}' | sed -s 's/:$//')
+DISK=$(echo $PART | sed -re 's/(nvme[0-9]n[0-9])p[0-9]/\1/;s/(xvd[a-z])[0-9]$/\1/')
+
 # Rewrite the partition table so that the partition takes up all the space that it can.
-sudo growpart /dev/xvda 1
+sudo growpart $DISK 1
 
 # Expand the size of the file system.
-sudo resize2fs /dev/xvda1
+sudo resize2fs $PART
