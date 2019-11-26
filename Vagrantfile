@@ -45,4 +45,22 @@ Vagrant.configure("2") do |config|
   #  sudo yum -y update
   #SHELL
 
+  # Use :ansible or :ansible_local to select the provisioner of your choice
+  # https://www.vagrantup.com/docs/provisioning/ansible_common.html
+
+  config.vm.provision "virtualbox", type: "ansible" do |ansible|
+    ansible.playbook = "provisioning/virtualbox.yml"
+    ansible.config_file = "provisioning/ansible.cfg"
+  end
+
+  config.vm.provision "selinux", type: "ansible" do |ansible|
+    ansible.playbook = "provisioning/selinux.yml"
+    ansible.config_file = "provisioning/ansible.cfg"
+  end
+
+  config.vm.provision "vagrant", type: "ansible" do |ansible|
+    ansible.playbook = "provisioning/vagrant.yml"
+    ansible.config_file = "provisioning/ansible.cfg"
+  end
+
 end

@@ -1,0 +1,25 @@
+---
+- hosts: all
+  gather_facts: no
+
+  tasks:
+
+    - name: Stop and disable postfix
+      service:
+        name: postfix
+        state: stopped
+        enabled: no
+      become: yes
+
+# In Virtualbox we likely have less than enough memory for kdump to function
+# properly. See https://access.redhat.com/solutions/59432
+
+    - name: Stop and disable kdump
+      service:
+        name: kdump
+        state: stopped
+        enabled: no
+      become: yes
+
+      #ignore_errors: yes  # We expect it to fail, show it as failed, but continue anyway
+      failed_when: no  # We expect this to fail, but make it always succeed

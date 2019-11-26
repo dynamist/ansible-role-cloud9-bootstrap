@@ -1,0 +1,18 @@
+# -*- mode: conf -*-
+
+[selinux]
+admin ansible_user=admin
+guest ansible_user=guest
+
+auditadm ansible_user=auditadm
+dbadm ansible_user=dbadm
+logadm ansible_user=logadm
+secadm ansible_user=secadm
+sysadm ansible_user=sysadm
+webadm ansible_user=webadm
+
+[selinux:vars]
+ansible_host=localhost
+ansible_port=2222
+ansible_ssh_private_key_file='.vagrant/machines/default/virtualbox/private_key'
+ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'

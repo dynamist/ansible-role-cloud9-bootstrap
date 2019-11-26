@@ -1,0 +1,103 @@
+---
+- hosts: all
+  gather_facts: no
+
+  vars:
+    password: "$6$oWFom3F4iM6LzfH1$CSUPACz4i3Hv.S.KFulYbQ95n/6yzfIeOM9UbJ5d0VNWmQqWn0tMJjiPwlNJqHHX8OIX6DpXcifHpNL.CmJz7." # redhat
+
+  tasks:
+
+    - name: Install SELinux tools
+      yum:
+        name:
+          - 'setools-console'         # seinfo & sesearch
+          - 'policycoreutils-python'  # semanage
+          - 'policycoreutils-newrole' # newrole
+          - 'setroubleshoot-server'
+      become: yes
+
+    - name: Set SELinux roles for staff
+      # Default: staff_r sysadm_r system_r unconfined_r
+      command: semanage user -a -R "staff_r system_r auditadm_r dbadm_r logadm_r secadm_r sysadm_r webadm_r" "staff_u"
+      become: yes
+
+    - name: Add admin user
+      user:
+        name: admin
+        shell: /bin/bash
+        groups: wheel
+        comment: Admin
+        password: "{{ password }}"
+      become: yes
+
+    - name: Set SELinux role for admin user
+      command: semanage login -a -s staff_u admin
+      become: yes
+
+    - name: Add guest user
+      user:
+        name: guest
+        shell: /bin/bash
+        comment: Guest
+        password: "{{ password }}"
+      become: yes
+
+    - name: Set SELinux role for guest user
+      command: semanage login -a -s guest_u guest
+      become: yes
+
+    - name: Add Linux users
+      user:
+        name: "{{ item }}"
+        shell: /bin/bash
+        groups: wheel
+        comment: "SELinux {{ item }}"
+        password: "{{ password }}"
+      become: yes
+      with_items:
+        - "auditadm"
+        - "dbadm"
+        - "logadm"
+        - "secadm"
+        - "sysadm"
+        - "webadm"
+
+    - name: Confine Linux users
+      command: semanage login -a -s "staff_u" "{{ item }}"
+      become: yes
+      with_items:
+        - "auditadm"
+        - "dbadm"
+        - "logadm"
+        - "secadm"
+        - "sysadm"
+        - "webadm"
+
+    - name: Restore SELinux labels for home directories
+      command: restorecon -RF "/home/{{ item }}"
+      become: yes
+      with_items:
+        - "admin"
+        - "auditadm"
+        - "dbadm"
+        - "guest"
+        - "logadm"
+        - "secadm"
+        - "sysadm"
+        - "webadm"
+
+    - name: Allow domain transition via sudo
+      lineinfile:
+        path: /etc/sudoers.d/selinux
+        line: "{{ item }}"
+        create: yes
+      become: yes
+      with_items:
+        - 'admin ALL=(root) ROLE="unconfined_r" TYPE="unconfined_t" NOPASSWD: ALL, ! /bin/su'
+        - 'auditadm ALL=(root) ROLE="auditadm_r" TYPE="auditadm_t" NOPASSWD: ALL, ! /bin/su'
+        - 'dbadm ALL=(root) ROLE="dbadm_r" TYPE="dbadm_t" NOPASSWD: ALL, ! /bin/su'
+        - 'guest ALL=(root) ROLE="guest_r" TYPE="guest_t" NOPASSWD: ALL, ! /bin/su'
+        - 'logadm ALL=(root) ROLE="logadm_r" TYPE="logadm_t" NOPASSWD: ALL, ! /bin/su'
+        - 'secadm ALL=(root) ROLE="secadm_r" TYPE="secadm_t" NOPASSWD: ALL, ! /bin/su'
+        - 'sysadm ALL=(root) ROLE="sysadm_r" TYPE="sysadm_t" NOPASSWD: ALL, ! /bin/su'
+        - 'webadm ALL=(root) ROLE="webadm_r" TYPE="webadm_t" NOPASSWD: ALL, ! /bin/su'
