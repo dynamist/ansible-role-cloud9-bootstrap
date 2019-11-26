@@ -43,9 +43,14 @@ Vagrant.configure("2") do |config|
   (1..N).each do |i|
     n = "%02d" % i
     config.vm.define "student#{n}" do |node|
+      config.vm.hostname = "student#{n}"
       node.vm.provision "shell",
         inline: "echo hello from node student#{n}"
     end
+  end
+
+  config.vm.define "tutor" do |node|
+    node.vm.hostname = "tutor"
   end
 
   #config.vm.provision "shell", inline: <<-SHELL
