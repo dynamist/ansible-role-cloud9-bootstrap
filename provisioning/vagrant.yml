@@ -8,8 +8,13 @@
 
   tasks:
 
+    - name: Check for SSH pubkey
+      local_action: stat path="{{ pubkey }}"
+      register: stat_pubkey
+
     - name: Create SSH pubkey locally in Vagrant directory
       local_action: "shell ssh-keygen -y -f {{ privkey }} > {{ pubkey }}"
+      when: stat_pubkey.stat.exists == false
 
     - name: Set authorized SSH key
       authorized_key:
