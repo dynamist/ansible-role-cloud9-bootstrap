@@ -3,6 +3,9 @@
 
 ENV["LC_ALL"] = "en_US.UTF-8"
 
+# Number of VMs
+N = 12
+
 # Check for required plugin(s)
 ['vagrant-vbguest'].each do |plugin|
   unless Vagrant.has_plugin?(plugin)
@@ -30,7 +33,7 @@ Vagrant.configure("2") do |config|
   #config.ssh.username = "sysadm"
   #config.ssh.username = "webadm"
 
-  (1..10).each do |i|
+  (1..N).each do |i|
     n = "%02d" % i
     config.vm.define "student#{n}" do |node|
       node.vm.provision "shell",
