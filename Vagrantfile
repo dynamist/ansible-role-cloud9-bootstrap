@@ -16,6 +16,8 @@ end
 Vagrant.configure("2") do |config|
   config.vm.box = "bento/centos-7.7"
 
+  config.vm.box_check_update = false
+
   config.vbguest.auto_update = false
 
   config.vm.synced_folder '.', '/vagrant', disabled: true
