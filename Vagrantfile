@@ -8,7 +8,7 @@ ENV["LC_ALL"] = "en_US.UTF-8"
   unless Vagrant.has_plugin?(plugin)
     raise "#{plugin} plugin not found. Please install it via 'vagrant plugin install #{plugin}'"
   end
-#end
+end
 
 Vagrant.configure("2") do |config|
   config.vm.box = "bento/centos-7.7"
