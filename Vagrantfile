@@ -20,6 +20,11 @@ Vagrant.configure("2") do |config|
 
   config.vm.synced_folder '.', '/vagrant', disabled: true
 
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "4096"
+    vb.cpus = "4"
+  end
+
   # Added this due to selinux problems having them in /vagrant
   #config.vm.synced_folder '.', '/tmp/vagrant',
   #  mount_options: ["dmode=775,fmode=775"]
