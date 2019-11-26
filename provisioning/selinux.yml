@@ -14,6 +14,8 @@
           - 'policycoreutils-python'  # semanage
           - 'policycoreutils-newrole' # newrole
           - 'setroubleshoot-server'
+          - 'rpm-build'
+          - 'selinux-policy-devel'
       become: yes
 
     - name: Set SELinux roles for staff
