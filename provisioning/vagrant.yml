@@ -5,13 +5,13 @@
   tasks:
 
     - name: Create SSH pubkey locally in Vagrant directory
-      local_action: shell ssh-keygen -y -f ../.vagrant/machines/default/virtualbox/private_key > ../.vagrant/machines/default/virtualbox/private_key.pub
+      local_action: shell ssh-keygen -y -f ../.vagrant/machines/student01/virtualbox/private_key > ../.vagrant/machines/student01/virtualbox/private_key.pub
 
     - name: Set authorized SSH key
       authorized_key:
         user: "{{ item }}"
         state: present
-        key: "{{ lookup('file', '../.vagrant/machines/default/virtualbox/private_key.pub') }}"
+        key: "{{ lookup('file', '.vagrant/machines/student01/virtualbox/private_key.pub') }}"
       become: yes
       with_items:
         - "admin"
