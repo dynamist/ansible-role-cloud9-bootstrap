@@ -2,9 +2,12 @@
 - hosts: all
   gather_facts: no
 
-  vars:
-    privkey: "../.vagrant/machines/tutor/virtualbox/private_key"
-    pubkey: "../.vagrant/machines/tutor/virtualbox/private_key.pub"
+  pre_tasks:
+
+    - name: Define path to SSH key paths
+      set_fact:
+        privkey: "../.vagrant/machines/{{ inventory_hostname }}/virtualbox/private_key"
+        pubkey: "../.vagrant/machines/{{ inventory_hostname }}/virtualbox/private_key.pub"
 
   tasks:
 
