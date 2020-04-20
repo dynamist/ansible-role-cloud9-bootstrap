@@ -1,0 +1,11 @@
+---
+- hosts: all
+  gather_facts: no
+
+  vars:
+    privkey: "../.vagrant/machines/tutor/virtualbox/private_key"
+
+  tasks:
+
+    - name: Fix permissions of SSH key
+      local_action: file path="{{ privkey }}" mode="0600"

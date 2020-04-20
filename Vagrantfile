@@ -3,8 +3,8 @@
 
 ENV["LC_ALL"] = "en_US.UTF-8"
 
-# Number of VMs
-N = 12
+# Number of student VMs
+N = 0
 
 # Check for required plugin(s)
 ['vagrant-vbguest'].each do |plugin|
@@ -21,6 +21,8 @@ Vagrant.configure("2") do |config|
   config.vbguest.auto_update = false
 
   config.vm.synced_folder '.', '/vagrant', disabled: true
+  #config.vm.synced_folder ".", "/vagrant", type: "rsync",
+  #  rsync__exclude: ".git/"
 
   config.vm.provider "virtualbox" do |vb|
     vb.memory = "4096"
@@ -51,6 +53,8 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "tutor" do |node|
     node.vm.hostname = "tutor"
+    node.vm.provision "shell",
+      inline: "echo hello from node tutor"
   end
 
   #config.vm.provision "shell", inline: <<-SHELL
@@ -72,6 +76,11 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "vagrant", type: "ansible" do |ansible|
     ansible.playbook = "provisioning/vagrant.yml"
+    ansible.config_file = "provisioning/ansible.cfg"
+  end
+
+  config.vm.provision "wsl", type: "ansible" do |ansible|
+    ansible.playbook = "provisioning/wsl.yml"
     ansible.config_file = "provisioning/ansible.cfg"
   end
 

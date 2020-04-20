@@ -3,8 +3,8 @@
   gather_facts: no
 
   vars:
-    privkey: "../.vagrant/machines/student01/virtualbox/private_key"
-    pubkey: "../.vagrant/machines/student01/virtualbox/private_key.pub"
+    privkey: "../.vagrant/machines/tutor/virtualbox/private_key"
+    pubkey: "../.vagrant/machines/tutor/virtualbox/private_key.pub"
 
   tasks:
 
