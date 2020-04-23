@@ -20,9 +20,9 @@ Vagrant.configure("2") do |config|
 
   config.vbguest.auto_update = false
 
-  config.vm.synced_folder '.', '/vagrant', disabled: true
-  #config.vm.synced_folder ".", "/vagrant", type: "rsync",
-  #  rsync__exclude: ".git/"
+  # config.vm.synced_folder '.', '/vagrant', disabled: true
+  config.vm.synced_folder ".", "/vagrant", type: "rsync",
+    rsync__exclude: ".git/"
 
   config.vm.provider "virtualbox" do |vb|
     vb.memory = "4096"
