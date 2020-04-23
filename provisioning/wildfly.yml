@@ -39,3 +39,4 @@
         name: wildfly
         state: started
         daemon_reload: yes
+      become: true
