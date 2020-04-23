@@ -1,0 +1,41 @@
+---
+- hosts: all
+
+  roles:
+    - role: andrewrothstein.wildfly
+      wildfly_version: 18.0.1.Final
+
+  tasks:
+    - name: Enable Wildfly service file
+      copy:
+        src: /usr/local/wildfly/docs/contrib/scripts/init.d/wildfly-init-redhat.sh
+        dest: /etc/init.d/wildfly
+        remote_src: yes
+        owner: root
+        group: root
+        mode: '0755'
+      become: true
+
+    - name: Configure Wildfly
+      template:
+        src: wildfly.j2
+        dest: /etc/default/wildfly
+        owner: root
+        group: root
+        mode: '0644'
+      become: true
+
+    # - name: Recursively change ownership of a directory
+    #   file:
+    #     path: /usr/local/wildfly
+    #     state: directory
+    #     recurse: yes
+    #     owner: vagrant
+    #     group: vagrant
+    #   become: true
+
+    - name: Enable and start Wildfly
+      systemd:
+        name: wildfly
+        state: started
+        daemon_reload: yes

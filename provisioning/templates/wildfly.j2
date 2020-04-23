@@ -1,0 +1,7 @@
+. /etc/profile.d/openjdk.sh
+. /etc/profile.d/wildfly.sh
+
+export JBOSS_HOME=/usr/local/wildfly
+export JBOSS_USER=vagrant
+
+chown -R $JBOSS_USER:$JBOSS_USER `readlink -f $JBOSS_HOME`
